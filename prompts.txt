@@ -274,6 +274,6 @@ Now generate the python script and store it in 'tableau_doc/src_v2'
 - Always include to the parameter name when calling functions
 - Always add type hints to function definitions
 - Focus on modularity. Break it down into separate files for clarity. 
-- Make sure all these arguments and parameters of the python script are controlled by a config (.yaml) file. Using Munch library is prefered.
+- Make sure all these arguments and parameters of the python script are controlled by config/config.yaml. Using Munch library is prefered.
 - Remember the Tableau file is at `tableau_doc/Superstore.twb` and it must not be changed.
 - The output of the python script should be stored at `tableau_doc/output` (Configurable, should be in the config.yaml file)

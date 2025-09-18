@@ -1,0 +1,18 @@
+tableau:
+  file_path: "tableau_file/Superstore.twb"
+  
+datasource:
+  enabled: true
+  output_format: "console"  # console, json, csv
+  
+table:
+  enabled: true
+  output_format: "console"  # console, json, csv
+  extract_worksheets: true
+  extract_dashboards: true
+  
+output:
+  directory: "output"
+  
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
