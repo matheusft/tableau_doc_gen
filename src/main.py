@@ -15,6 +15,7 @@ from datasource_extractor import extract_datasources_from_file
 from table_extractor import extract_tables_from_file
 from worksheet_extractor import extract_worksheets_from_file
 from dashboard_extractor import extract_dashboards_from_file
+from tableau_fields_analyzer import analyze_tableau_fields
 
 
 def main() -> None:
@@ -54,6 +55,11 @@ def main() -> None:
             logger.info("Extracting dashboards...")
             dashboards = extract_dashboards_from_file(file_path=config.tableau.file_path)
             logger.info(f"Found {len(dashboards)} dashboards")
+
+        # Analyze field usage
+        logger.info("Analyzing field usage...")
+        fields_used = analyze_tableau_fields(file_path=config.tableau.file_path)
+        logger.info(f"Found {len(fields_used)} fields used")
 
         logger.info("Documentation generation completed")
 
