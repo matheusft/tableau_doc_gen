@@ -292,7 +292,7 @@ class TableauFieldsAnalyzer:
 
         for field_key, field_info in field_definitions.items():
             usage_count = usage_counts.get(field_key, 0)
-            
+
             field_data = {
                 "field_name": field_info["display_name"],
                 "field_type": field_info["field_type"],
@@ -306,7 +306,7 @@ class TableauFieldsAnalyzer:
 
         # Sort used fields by usage count (descending) then by name
         used_fields.sort(key=lambda x: (-x["used_times"], x["field_name"]))
-        
+
         # Sort unused fields by name
         unused_fields.sort(key=lambda x: x["field_name"])
 
@@ -350,7 +350,9 @@ class TableauFieldsAnalyzer:
                 field_type = field["field_type"]
                 print(f"{i:<3} {name:<47} {field_type}")
 
-            print(f"\nShowing 1 to {len(unused_fields)} of {len(unused_fields)} entries")
+            print(
+                f"\nShowing 1 to {len(unused_fields)} of {len(unused_fields)} entries"
+            )
 
     def run(self) -> Dict[str, List[Dict[str, Any]]]:
         """Run the analysis.
