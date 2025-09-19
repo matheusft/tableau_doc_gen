@@ -17,6 +17,7 @@ from worksheet_extractor import extract_worksheets_from_file
 from dashboard_extractor import extract_dashboards_from_file
 from tableau_fields_analyzer import analyze_tableau_fields
 from field_dependencies_extractor import extract_field_dependencies
+from field_dependencies_network import create_field_dependencies_network
 
 
 def main() -> None:
@@ -80,6 +81,18 @@ def main() -> None:
             file_path=config.tableau.file_path
         )
         logger.info(f"Found {len(dependencies)} field dependencies")
+
+        # Create field dependencies network visualization
+        logger.info("Creating field dependencies network visualization...")
+        network_graph = create_field_dependencies_network(
+            file_path=config.tableau.file_path,
+            output_dir="output",
+            save_filename="field_dependencies_network.png"
+        )
+        logger.info(
+            f"Network visualization created with {network_graph.number_of_nodes()} nodes "
+            f"and {network_graph.number_of_edges()} edges"
+        )
 
         logger.info("Documentation generation completed")
 
