@@ -16,6 +16,7 @@ from table_extractor import extract_tables_from_file
 from worksheet_extractor import extract_worksheets_from_file
 from dashboard_extractor import extract_dashboards_from_file
 from tableau_fields_analyzer import analyze_tableau_fields
+from field_dependencies_extractor import extract_field_dependencies
 
 
 def main() -> None:
@@ -45,23 +46,40 @@ def main() -> None:
             logger.info(f"Found {len(tables)} datasource tables")
 
         # Extract worksheets if enabled
-        if hasattr(config.table, 'extract_worksheets') and config.table.extract_worksheets:
+        if (hasattr(config.table, 'extract_worksheets') and 
+            config.table.extract_worksheets):
             logger.info("Extracting worksheets...")
-            worksheets = extract_worksheets_from_file(file_path=config.tableau.file_path)
+            worksheets = extract_worksheets_from_file(
+                file_path=config.tableau.file_path
+            )
             logger.info(f"Found {len(worksheets)} worksheets")
 
         # Extract dashboards if enabled
-        if hasattr(config.table, 'extract_dashboards') and config.table.extract_dashboards:
+        if (hasattr(config.table, 'extract_dashboards') and 
+            config.table.extract_dashboards):
             logger.info("Extracting dashboards...")
-            dashboards = extract_dashboards_from_file(file_path=config.tableau.file_path)
+            dashboards = extract_dashboards_from_file(
+                file_path=config.tableau.file_path
+            )
             logger.info(f"Found {len(dashboards)} dashboards")
 
         # Analyze field usage
         logger.info("Analyzing field usage...")
-        field_results = analyze_tableau_fields(file_path=config.tableau.file_path)
+        field_results = analyze_tableau_fields(
+            file_path=config.tableau.file_path
+        )
         used_count = len(field_results.get("used", []))
         unused_count = len(field_results.get("unused", []))
-        logger.info(f"Found {used_count} fields used, {unused_count} fields unused")
+        logger.info(
+            f"Found {used_count} fields used, {unused_count} fields unused"
+        )
+
+        # Extract field dependencies
+        logger.info("Extracting field dependencies...")
+        dependencies = extract_field_dependencies(
+            file_path=config.tableau.file_path
+        )
+        logger.info(f"Found {len(dependencies)} field dependencies")
 
         logger.info("Documentation generation completed")
 
