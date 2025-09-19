@@ -58,8 +58,10 @@ def main() -> None:
 
         # Analyze field usage
         logger.info("Analyzing field usage...")
-        fields_used = analyze_tableau_fields(file_path=config.tableau.file_path)
-        logger.info(f"Found {len(fields_used)} fields used")
+        field_results = analyze_tableau_fields(file_path=config.tableau.file_path)
+        used_count = len(field_results.get("used", []))
+        unused_count = len(field_results.get("unused", []))
+        logger.info(f"Found {used_count} fields used, {unused_count} fields unused")
 
         logger.info("Documentation generation completed")
 

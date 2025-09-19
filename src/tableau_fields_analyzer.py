@@ -21,11 +21,11 @@ class TableauFieldsAnalyzer:
         self.file_path = Path(file_path)
         self.logger = logging.getLogger(__name__)
 
-    def analyze_fields_usage(self) -> List[Dict[str, Any]]:
+    def analyze_fields_usage(self) -> Dict[str, List[Dict[str, Any]]]:
         """Analyze field usage matching the reference format.
 
         Returns:
-            List of field usage dictionaries
+            Dictionary containing 'used' and 'unused' field lists
         """
         if not self.file_path.exists():
             raise FileNotFoundError(f"Tableau file not found: {self.file_path}")
@@ -277,78 +277,100 @@ class TableauFieldsAnalyzer:
 
     def _create_usage_results(
         self, field_definitions: Dict[str, Dict[str, str]], usage_counts: Dict[str, int]
-    ) -> List[Dict[str, Any]]:
-        """Create final usage results.
+    ) -> Dict[str, List[Dict[str, Any]]]:
+        """Create final usage results for both used and unused fields.
 
         Args:
             field_definitions: Field definitions
             usage_counts: Usage counts
 
         Returns:
-            List of field usage dictionaries
+            Dictionary with 'used' and 'unused' field lists
         """
-        results = []
+        used_fields = []
+        unused_fields = []
 
         for field_key, field_info in field_definitions.items():
             usage_count = usage_counts.get(field_key, 0)
+            
+            field_data = {
+                "field_name": field_info["display_name"],
+                "field_type": field_info["field_type"],
+            }
 
-            if usage_count > 0:  # Only include used fields
-                results.append(
-                    {
-                        "field_name": field_info["display_name"],
-                        "field_type": field_info["field_type"],
-                        "used_times": usage_count,
-                    }
-                )
+            if usage_count > 0:
+                field_data["used_times"] = usage_count
+                used_fields.append(field_data)
+            else:
+                unused_fields.append(field_data)
 
-        # Sort by usage count (descending) then by name
-        results.sort(key=lambda x: (-x["used_times"], x["field_name"]))
+        # Sort used fields by usage count (descending) then by name
+        used_fields.sort(key=lambda x: (-x["used_times"], x["field_name"]))
+        
+        # Sort unused fields by name
+        unused_fields.sort(key=lambda x: x["field_name"])
 
-        return results
+        return {"used": used_fields, "unused": unused_fields}
 
-    def print_results(self, results: List[Dict[str, Any]]) -> None:
-        """Print results in reference format.
+    def print_results(self, results: Dict[str, List[Dict[str, Any]]]) -> None:
+        """Print results in reference format for both used and unused fields.
 
         Args:
-            results: List of field usage dictionaries
+            results: Dictionary containing 'used' and 'unused' field lists
         """
-        if not results:
-            print("No fields found.")
-            return
+        used_fields = results.get("used", [])
+        unused_fields = results.get("unused", [])
 
-        print("\nFIELDS USED")
-        print("=" * 80)
-        print()
-        print(f"{'FIELD NAME':<30} {'FIELD TYPE':<20} {'USED_TIMES'}")
-        print("-" * 70)
+        # Print used fields
+        if used_fields:
+            print("\nFIELDS USED")
+            print("=" * 80)
+            print()
+            print(f"{'FIELD NAME':<30} {'FIELD TYPE':<20} {'USED_TIMES'}")
+            print("-" * 70)
 
-        for i, field in enumerate(results, 1):
-            name = field["field_name"][:29]
-            field_type = field["field_type"][:19]
-            usage = str(field["used_times"])
-            print(f"{i:<3} {name:<27} {field_type:<19} {usage}")
+            for i, field in enumerate(used_fields, 1):
+                name = field["field_name"][:29]
+                field_type = field["field_type"][:19]
+                usage = str(field["used_times"])
+                print(f"{i:<3} {name:<27} {field_type:<19} {usage}")
 
-        print(f"\nShowing 1 to {len(results)} of {len(results)} entries")
+            print(f"\nShowing 1 to {len(used_fields)} of {len(used_fields)} entries")
 
-    def run(self) -> List[Dict[str, Any]]:
+        # Print unused fields
+        if unused_fields:
+            print("\n\nFIELDS NOT USED")
+            print("=" * 80)
+            print()
+            print(f"{'FIELD NAME':<50} {'FIELD TYPE'}")
+            print("-" * 70)
+
+            for i, field in enumerate(unused_fields, 1):
+                name = field["field_name"][:49]
+                field_type = field["field_type"]
+                print(f"{i:<3} {name:<47} {field_type}")
+
+            print(f"\nShowing 1 to {len(unused_fields)} of {len(unused_fields)} entries")
+
+    def run(self) -> Dict[str, List[Dict[str, Any]]]:
         """Run the analysis.
 
         Returns:
-            List of field usage dictionaries
+            Dictionary containing 'used' and 'unused' field lists
         """
         results = self.analyze_fields_usage()
         self.print_results(results=results)
         return results
 
 
-def analyze_tableau_fields(file_path: str) -> List[Dict[str, Any]]:
+def analyze_tableau_fields(file_path: str) -> Dict[str, List[Dict[str, Any]]]:
     """Analyze Tableau fields usage from workbook file.
 
     Args:
         file_path: Path to Tableau workbook file
 
     Returns:
-        List of field usage dictionaries
+        Dictionary containing 'used' and 'unused' field lists
     """
     analyzer = TableauFieldsAnalyzer(file_path=file_path)
     return analyzer.run()
