@@ -47,8 +47,10 @@ def main() -> None:
             logger.info(f"Found {len(tables)} datasource tables")
 
         # Extract worksheets if enabled
-        if (hasattr(config.table, 'extract_worksheets') and 
-            config.table.extract_worksheets):
+        if (
+            hasattr(config.table, "extract_worksheets")
+            and config.table.extract_worksheets
+        ):
             logger.info("Extracting worksheets...")
             worksheets = extract_worksheets_from_file(
                 file_path=config.tableau.file_path
@@ -56,8 +58,10 @@ def main() -> None:
             logger.info(f"Found {len(worksheets)} worksheets")
 
         # Extract dashboards if enabled
-        if (hasattr(config.table, 'extract_dashboards') and 
-            config.table.extract_dashboards):
+        if (
+            hasattr(config.table, "extract_dashboards")
+            and config.table.extract_dashboards
+        ):
             logger.info("Extracting dashboards...")
             dashboards = extract_dashboards_from_file(
                 file_path=config.tableau.file_path
@@ -66,20 +70,14 @@ def main() -> None:
 
         # Analyze field usage
         logger.info("Analyzing field usage...")
-        field_results = analyze_tableau_fields(
-            file_path=config.tableau.file_path
-        )
+        field_results = analyze_tableau_fields(file_path=config.tableau.file_path)
         used_count = len(field_results.get("used", []))
         unused_count = len(field_results.get("unused", []))
-        logger.info(
-            f"Found {used_count} fields used, {unused_count} fields unused"
-        )
+        logger.info(f"Found {used_count} fields used, {unused_count} fields unused")
 
         # Extract field dependencies
         logger.info("Extracting field dependencies...")
-        dependencies = extract_field_dependencies(
-            file_path=config.tableau.file_path
-        )
+        dependencies = extract_field_dependencies(file_path=config.tableau.file_path)
         logger.info(f"Found {len(dependencies)} field dependencies")
 
         # Create field dependencies network visualization
@@ -87,7 +85,7 @@ def main() -> None:
         network_graph = create_field_dependencies_network(
             file_path=config.tableau.file_path,
             output_dir="output",
-            save_filename="field_dependencies_network.png"
+            save_filename="field_dependencies_network.png",
         )
         logger.info(
             f"Network visualization created with {network_graph.number_of_nodes()} nodes "
