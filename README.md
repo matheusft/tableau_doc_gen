@@ -29,6 +29,9 @@ This tool analyzes Tableau workbook XML files to extract and document various co
 - Show relationships between calculated and source fields
 - Export as PNG image
 
+
+<img src="output/field_dependencies_network.png" alt="isolated" width="750"/>
+
 ## Installation
 
 1. Clone the repository:
