@@ -2,3 +2,6 @@
 .venv_*/*
 .DS_Store
 *.pyc
+__pycache__/
+prompts.txt
+ref/
