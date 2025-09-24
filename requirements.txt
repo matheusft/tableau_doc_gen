@@ -1,2 +1,4 @@
-munch
-PyYAML
+munch==4.0.0
+PyYAML==6.0.2
+networkx==3.5
+matplotlib==3.10.6
