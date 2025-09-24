@@ -33,7 +33,7 @@ This tool analyzes Tableau workbook XML files to extract and document various co
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/matheusft/tableau_doc_gen.git
 cd tableau_doc_gen
 ```
 
